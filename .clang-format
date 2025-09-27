@@ -1,0 +1,13 @@
+Language: Cpp
+BasedOnStyle: Microsoft
+AccessModifierOffset: -2
+PointerAlignment: Left
+ColumnLimit: 125
+
+# Constructor initializer list
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerIndentWidth: 4
+PackConstructorInitializers: Never
+
+# Switch statements
+AllowShortCaseLabelsOnASingleLine: true
