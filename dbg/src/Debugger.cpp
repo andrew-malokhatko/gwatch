@@ -11,7 +11,7 @@
 namespace dbg
 {
 
-Debugger::Debugger(const std::string& program, std::vector<std::string>& args, callback_t onRead, callback_t onWrite)
+Debugger::Debugger(const std::string& program, const std::vector<std::string>& args, callback_t onRead, callback_t onWrite)
     : m_path{program},
       m_args{args},
       m_onRead{onRead},
@@ -50,12 +50,6 @@ void Debugger::runDebugger(pid_t childPid, const std::string& watchedVariable)
     auto symbol = util::findSymbol(m_path, watchedVariable);
     uintptr_t symbolAddress = base + symbol.first;
     size_t symbolSize = symbol.second;
-
-    long symV = ptrace(PTRACE_PEEKDATA, childPid, symbolAddress, nullptr);
-    if (symV == -1)
-    {
-        throw std::runtime_error(strerror(errno));
-    }
 
     // set hardware watchpoint
     util::setHardwareWatchpoint(childPid, symbolAddress, symbolSize);

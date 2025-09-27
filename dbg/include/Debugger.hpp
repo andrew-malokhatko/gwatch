@@ -23,7 +23,7 @@ class Debugger
     void runChild();
 
   public:
-    Debugger(const std::string& program, std::vector<std::string>& args, callback_t onRead = {}, callback_t onWrite = {});
+    Debugger(const std::string& program, const std::vector<std::string>& args, callback_t onRead = {}, callback_t onWrite = {});
 
     void setOnRead(callback_t onRead);
     void setOnWrite(callback_t onWrite);
