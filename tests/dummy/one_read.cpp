@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-const volatile int global_var = 42;
+int global_var = 42;
 
 int main()
 {

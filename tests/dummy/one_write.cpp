@@ -2,8 +2,6 @@
 //  g++ -g -o one_write one_write.cpp
 //
 
-#include <iostream>
-
 long global_var = 42;
 
 int main()

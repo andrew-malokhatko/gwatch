@@ -11,3 +11,6 @@ PackConstructorInitializers: Never
 
 # Switch statements
 AllowShortCaseLabelsOnASingleLine: true
+
+BraceWrapping:
+  BeforeLambdaBody: true

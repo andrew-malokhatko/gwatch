@@ -32,7 +32,6 @@ std::pair<uintptr_t, size_t> findSymbol(const std::string& exePath, const std::s
 /// @param pid id of process watchpoint will be set to
 /// @param addr address of the watchpoint
 /// @param size size of the tracked address (bytes)
-/// @param type describes when an interrupt is triggered
 void setHardwareWatchpoint(pid_t pid, uintptr_t addr, size_t size);
 
 /// Symbolizes in which context did the watchpoint occur

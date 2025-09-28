@@ -3,6 +3,8 @@ add_library(dbg
         src/Debugger.cpp
         include/Util.hpp
         src/Util.cpp
+        include/Variable.hpp
+        src/Variable.cpp
 )
 
 target_include_directories(dbg

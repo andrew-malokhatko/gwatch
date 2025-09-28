@@ -162,7 +162,7 @@ std::pair<uint64_t, uint64_t> findSymbol(const std::string& exePath, const std::
     for (size_t i = 0; i < symbolCount; ++i)
     {
         std::string name = stringTable + symbols[i].st_name; // st_name is offset to stringTable
-        if (name.ends_with(symbolName)) // ignore c++ name mangling (see README on global variables)
+        if (name == symbolName) // ignore c++ name mangling (see README on global variables)
         {
             uint64_t val = symbols[i].st_value; // symbols link-time offset
             uint64_t size = symbols[i].st_size;

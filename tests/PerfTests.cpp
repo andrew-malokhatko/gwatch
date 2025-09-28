@@ -34,7 +34,7 @@ class PerfTests : public ::testing::TestWithParam<std::tuple<std::string,int>>
             FAIL() << "Direct run failed with code: " << ret;
         }
 
-        std::cout << "Testing " << m_path << " for " << m_accessCount << " accesses.\n";
+        std::cout << "\nTesting " << m_path << " for " << m_accessCount << " accesses.\n";
         std::cout << "Direct run time for " << m_path << ": " << m_directTime << " milliseconds\n";
     }
 };
@@ -42,7 +42,8 @@ class PerfTests : public ::testing::TestWithParam<std::tuple<std::string,int>>
 TEST_P(PerfTests, DebuggerPerfTests)
 {
     std::vector<std::string> args{std::to_string(m_accessCount)};
-    dbg::Debugger debugger(m_path, args);
+    dbg::Variable var {"global_var"};
+    dbg::Debugger debugger(m_path, args, var);
 
     std::vector<long> read;
     std::vector<long> write;
@@ -51,12 +52,23 @@ TEST_P(PerfTests, DebuggerPerfTests)
     read.reserve(m_accessCount);
     write.reserve(m_accessCount);
 
-    debugger.setOnRead([&read](long val, size_t size) { read.push_back(val); });
-    debugger.setOnWrite([&write](long val, size_t size) { write.push_back(val); });
+    // clang-format off
+    debugger.setOnRead(
+        [&read](const dbg::Variable var)
+        {
+            read.push_back(var.get<long>());
+        });
+
+    debugger.setOnWrite(
+        [&write](const dbg::Variable var)
+        {
+            write.push_back(var.get<long>());
+        });
+    // clang-format on
 
     // Measure debug runtime
     auto startDebug = std::chrono::high_resolution_clock::now();
-    debugger.run("global_var");
+    debugger.run();
     auto endDebug = std::chrono::high_resolution_clock::now();
     auto debugTime = std::chrono::duration<double, std::milli>(endDebug - startDebug).count();
 

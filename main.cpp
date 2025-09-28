@@ -1,21 +1,20 @@
+#include <Debugger.hpp>
 #include <filesystem>
 #include <iostream>
 #include <vector>
-#include <Debugger.hpp>
 
 static constexpr int MIN_ARG_COUNT = 5;
 
 struct Args
 {
-    std::string symbol{};
-    bool singed;
-    std::string program{};
-    std::vector<std::string> programArgs{};
+    dbg::Variable var{};
+    std::string path{};
+    std::vector<std::string> args{};
 };
 
 void printHelp()
 {
-    std::cout << "Usage: gwatch --var <symbol> --exec <path> [-- arg1 ... argN]\n";
+    std::cout << "Usage: gwatch (--var | --svar) <symbol> --exec <path> [-- arg1 ... argN]\n";
 }
 
 Args parseArgs(int argc, char* argv[])
@@ -29,11 +28,13 @@ Args parseArgs(int argc, char* argv[])
 
     // --var should always be specified as the first argument
     std::string varArg = argv[1];
-    if (varArg != "--var" || varArg == "--svar")
+    if (varArg != "--var" && varArg != "--svar")
     {
         throw std::invalid_argument("--var should be specified first");
     }
-    args.symbol = argv[2];
+
+    bool isSigned = varArg == "--svar";
+    args.var = dbg::Variable(argv[2], isSigned);
 
     // --exec should always be specified as the second argument
     std::string execArg = argv[3];
@@ -41,12 +42,12 @@ Args parseArgs(int argc, char* argv[])
     {
         throw std::invalid_argument("--exec should be specified as the second argument");
     }
-    args.program = argv[4];
+    args.path = argv[4];
 
     // read any arguments that the input program accept
     for (int i = MIN_ARG_COUNT - 1; i < argc; ++i)
     {
-        args.programArgs.emplace_back(argv[i]);
+        args.args.emplace_back(argv[i]);
     }
 
     return args;
@@ -58,7 +59,7 @@ int main(int argc, char* argv[])
     Args args{};
     try
     {
-        parseArgs(argc, argv);
+        args = parseArgs(argc, argv);
     }
     catch (std::invalid_argument& e)
     {
@@ -68,10 +69,25 @@ int main(int argc, char* argv[])
     }
 
     // Start debugger
-    dbg::Debugger debugger = dbg::Debugger(args.program, args.programArgs);
+    dbg::Debugger debugger = dbg::Debugger(args.path, args.args, args.var);
+
+    // clang-format off
+    debugger.setOnRead(
+        [](const dbg::Variable& var)
+        {
+            std::cout << "read: " << var.toString() << "\n";
+        });
+
+    debugger.setOnWrite(
+        [](const dbg::Variable& var)
+        {
+            std::cout << "write: " << var.toString() << "\n";
+        });
+    // clang-format on
+
     try
     {
-        debugger.run("");
+        debugger.run();
     }
     catch (std::runtime_error& e)
     {
