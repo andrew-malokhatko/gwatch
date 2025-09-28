@@ -6,14 +6,16 @@ set -e
 BUILD_DIR=build
 DEBUGGER=$BUILD_DIR/gwatch
 TEST_PROG=$BUILD_DIR/tests/real  # default to tests/real
+SYMBOL=global_var
 
 # parse options
-while getopts "b:d:t:" opt; do
+while getopts "b:d:t:s:" opt; do
   case $opt in
     b) BUILD_DIR=$OPTARG ;;
     d) DEBUGGER=$OPTARG ;;
     t) TEST_PROG=$OPTARG ;;
-    *) echo "Usage: $0 [-b build_dir] [-d debugger] [-t test_prog]"; exit 1 ;;
+    s) SYMBOL=$OPTARG ;;
+    *) echo "Usage: $0 [-b build_dir] [-d debugger] [-t test_prog] [-s symbol]"; exit 1 ;;
   esac
 done
 
@@ -31,7 +33,7 @@ for N in "${TEST_CASES[@]}"; do
     echo "Running test with $N accesses..."
 
     # Run debugger on sample program
-    $DEBUGGER --var global_var --exec $TEST_PROG $N > output.txt
+    $DEBUGGER --var $SYMBOL --exec $TEST_PROG $N > output.txt
 
     # Basic verification: ensure some read/write events were captured
     READ_COUNT=$(grep -c "read:" output.txt || true)

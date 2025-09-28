@@ -124,11 +124,11 @@ ctest -R PerfTests --verbose
 The `autotest.sh` script builds the project and runs a predefined test program.
 Run it from the project root:
 ```shell
-./autotest [-b build_dir] [-d debugger] [-t test_prog]
+./autotest [-b build_dir] [-d debugger] [-t test_prog] [-s symbol]
 ```
 - `-b build_dir` : Custom build directory (default: build)
 - `-d debugger` : Path to the debugger executable (default: build/gwatch)
-- `-t test_prog` : Test program to run instead of the default
+- `-t test_prog` : Test program to run (default: tests/real)
+- `-s symbol` : Watched global variable (default: global_var) 
 
 All arguments are optional.
-

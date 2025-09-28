@@ -74,14 +74,14 @@ int main(int argc, char* argv[])
     debugger.setOnRead(
         [](const dbg::Variable& var)
         {
-            std::cout << "read: " << var.toString() << "\n";
+            std::cout << var.name << "\tread:\t" << var.toString() << "\n";
         });
 
     debugger.setOnWrite(
         [&debugger](const dbg::Variable& var)
         {
             auto lastVar = debugger.getLastVar();
-            std::cout << "write: " << lastVar.toString() << " -> " << var.toString() << "\n";
+            std::cout << var.name << "\twrite:\t" << lastVar.toString() << " -> " << var.toString() << "\n";
         });
     // clang-format on
 
