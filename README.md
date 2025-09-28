@@ -1,3 +1,9 @@
+# Overview
+`gwatch` is a lightweight debugger designed to monitor
+and report changes to global variables in C programs.
+It leverages Linux `ptrace` along with hardware debug registers (`DR0–DR7`)
+to efficiently track memory accesses at runtime.
+
 # Assumptions & Limitations 
 
 ### Architecture
@@ -32,7 +38,97 @@ global variables.
 
 
 ### Compilers
-Use g++.
+Use g++. I can't guarantee behavior for any other compiler since all
+of my tests and examples hardly rely on it.
 
-### Testing
-Performance tests and Functional tests 
+# Dependencies / Requirements
+
+To build and run `gwatch`, you will need:
+
+- **Operating System**: Linux x86_64
+- **CPU**: Intel/AMD with hardware debug registers (`DR0–DR7`)
+- **Compiler**: g++ version ≥ 13.3
+- **CMake**: version ≥ 3.28
+- **GoogleTest (GTest)**: for running the unit and performance tests
+
+# Build & Run
+The easiest way to build and test this program is to run the `autotest.sh` script.
+It will automatically build the project and run a set of simple tests.
+
+---
+
+### Manual Build
+
+If you prefer to build manually, run:
+
+```shell
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+
+# Usage
+
+Run the debugger with:
+```shell
+./gwatch (--var | --svar) <symbol> --exec <path> [-- arg1 ... argN]
+```
+
+- --var <symbol>: Track an unsigned global variable.
+- --svar <symbol>: Track a signed global variable.
+- --exec <path>: Path to the program you want to debug.
+- [-- arg1 ... argN]: Optional arguments passed to the debugged program.
+
+# Examples
+
+A sample executable `cli_example` is provided, which updates three global variables  
+`a`, `b`, and `c` once every second. You can try it out as follows:
+
+```shell
+./gwatch --var a --exec ./cli_example
+```
+
+or
+
+```shell
+./gwatch --svar a --exec ./cli_example
+```
+
+# Tests
+This project is tested using both **GoogleTest (GTest)** and the `autotest.sh` script.
+
+### GTest
+
+There are two collections of tests implemented with GTest:
+- **DebuggerTests** (functional tests)
+- **PerfTests** (performance tests)
+
+To run all tests:
+```shell
+cd build
+ctest
+```
+
+To run specific test, pass -R with the test name:
+```shell
+ctest -R <test_name>
+```
+To see detailed output of performance tests, run with --verbose:
+```shell
+ctest -R PerfTests --verbose 
+```
+
+### autotest.sh
+
+The `autotest.sh` script builds the project and runs a predefined test program.
+Run it from the project root:
+```shell
+./autotest [-b build_dir] [-d debugger] [-t test_prog]
+```
+- `-b build_dir` : Custom build directory (default: build)
+- `-d debugger` : Path to the debugger executable (default: build/gwatch)
+- `-t test_prog` : Test program to run instead of the default
+
+All arguments are optional.
+

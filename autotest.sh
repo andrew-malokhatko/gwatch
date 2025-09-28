@@ -3,7 +3,7 @@
 
 set -e
 
-BUILD_DIR=cmake-build-debug
+BUILD_DIR=build
 DEBUGGER=$BUILD_DIR/gwatch
 TEST_PROG=$BUILD_DIR/tests/real  # default to tests/real
 
