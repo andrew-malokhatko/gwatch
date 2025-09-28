@@ -1,9 +1,9 @@
 add_library(dbg
         include/Debugger.hpp
-        src/Debugger.cpp
-        include/Util.hpp
-        src/Util.cpp
         include/Variable.hpp
+        src/Debugger.cpp
+        src/Util.cpp
+        src/Util.hpp
         src/Variable.cpp
 )
 

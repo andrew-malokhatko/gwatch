@@ -35,7 +35,7 @@ std::pair<uintptr_t, size_t> findSymbol(const std::string& exePath, const std::s
 void setHardwareWatchpoint(pid_t pid, uintptr_t addr, size_t size);
 
 /// Symbolizes in which context did the watchpoint occur
-enum WatchpointEvent
+enum class WatchpointEvent
 {
     READ,
     WRITE,

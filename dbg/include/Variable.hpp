@@ -13,9 +13,9 @@ struct Variable
     bool isSigned;
 
     // set by debugger
-    uintptr_t address{};
-    size_t size{};
-    uint64_t bytes{};
+    uintptr_t address = 0;
+    size_t size = 0;
+    uint64_t bytes = 0;
 
     Variable() = default;
     Variable(const std::string& varName, bool varSigned = false);

@@ -35,6 +35,6 @@ namespace dbg
         }
         // clang-format on
 
-        throw std::runtime_error("Unsupported variable size in Variable::toString()");
+        return "undefined";
     }
 }

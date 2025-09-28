@@ -8,7 +8,7 @@
 
 unsigned char a = 0;
 short b = 0;
-int c = 0;
+int c ;
 long d = 0;
 
 // increments a once per second

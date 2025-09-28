@@ -251,14 +251,14 @@ WatchpointEvent getWatchpointEvent(pid_t pid)
 
     if (reg0 && reg1)
     {
-        return WRITE;
+        return WatchpointEvent::WRITE;
     }
     if (!reg0 && reg1)
     {
-        return READ;
+        return WatchpointEvent::READ;
     }
 
-    return OTHER;
+    return WatchpointEvent::OTHER;
 }
 
 } // namespace dbg::util

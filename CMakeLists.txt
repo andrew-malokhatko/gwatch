@@ -20,14 +20,12 @@ if(BUILD_TESTS)
     enable_testing()
 
     find_package(GTest REQUIRED)
-    if(NOT GTest_FOUND)
-        message(FATAL_ERROR "Google Test not found. Please install it (e.g., 'sudo apt install libgtest-dev' on Ubuntu).")
-    endif()
 
     add_subdirectory(tests)
 endif()
 
 add_executable(gwatch main.cpp)
+target_link_libraries(gwatch PRIVATE dbg)
 
 # build examples
 option(BUILD_EXAMPLES "Examples" ON)
@@ -39,5 +37,3 @@ if (BUILD_EXAMPLES)
             cli_example
     )
 endif()
-
-target_link_libraries(gwatch PRIVATE dbg)

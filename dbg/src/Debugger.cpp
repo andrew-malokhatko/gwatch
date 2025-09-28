@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstring>
 #include <filesystem>
+#include <iostream>
 #include <stdexcept>
 #include <sys/ptrace.h>
 #include <sys/wait.h>
@@ -30,14 +31,18 @@ void Debugger::setOnWrite(callback_t onWrite)
     m_onWrite = onWrite;
 }
 
-void Debugger::setVariable(const Variable& variable)
+const Variable& Debugger::getVar() const
 {
-    m_var = variable;
+    return m_var;
+}
+
+const Variable& Debugger::getLastVar() const
+{
+    return m_prevVar;
 }
 
 void Debugger::trackNewThread(pid_t threadId)
 {
-
     int status = 0;
     int wRet = waitpid(threadId, &status, 0);
 
@@ -161,13 +166,14 @@ void Debugger::traceChild(pid_t childPid)
                         throw std::runtime_error("PTRACE_PEEKDATA failed: " + std::string(strerror(errno)));
                     }
 
+                    m_prevVar = m_var;
                     memcpy(&m_var.bytes, &word, m_var.size);
 
                     auto watchpointEvent = util::getWatchpointEvent(threadId);
                     switch (watchpointEvent)
                     {
-                    case util::READ: m_onRead(m_var); break;
-                    case util::WRITE: m_onWrite(m_var); break;
+                    case util::WatchpointEvent::READ: m_onRead(m_var); break;
+                    case util::WatchpointEvent::WRITE: m_onWrite(m_var); break;
                     }
                 }
             }

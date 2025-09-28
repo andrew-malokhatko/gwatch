@@ -1,5 +1,4 @@
 #include <Debugger.hpp>
-#include <filesystem>
 #include <iostream>
 #include <vector>
 
@@ -21,7 +20,7 @@ Args parseArgs(int argc, char* argv[])
 {
     if (argc < MIN_ARG_COUNT)
     {
-        throw std::invalid_argument("Wrong number of arguments");
+        throw std::invalid_argument("Wrong argument count");
     }
 
     Args args{};
@@ -45,7 +44,7 @@ Args parseArgs(int argc, char* argv[])
     args.path = argv[4];
 
     // read any arguments that the input program accept
-    for (int i = MIN_ARG_COUNT - 1; i < argc; ++i)
+    for (int i = MIN_ARG_COUNT; i < argc; ++i)
     {
         args.args.emplace_back(argv[i]);
     }
@@ -79,9 +78,10 @@ int main(int argc, char* argv[])
         });
 
     debugger.setOnWrite(
-        [](const dbg::Variable& var)
+        [&debugger](const dbg::Variable& var)
         {
-            std::cout << "write: " << var.toString() << "\n";
+            auto lastVar = debugger.getLastVar();
+            std::cout << "write: " << lastVar.toString() << " -> " << var.toString() << "\n";
         });
     // clang-format on
 
