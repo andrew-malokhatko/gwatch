@@ -1,12 +1,12 @@
 #include "Debugger.hpp"
 
-#include <gtest/gtest.h>
 #include <chrono>
+#include <gtest/gtest.h>
 
 /// Performance tests for Debugger class
 /// RAW = only read/write accesses
 /// REAL = tries to simulate real workload
-class PerfTests : public ::testing::TestWithParam<std::tuple<std::string,int>>
+class PerfTests : public ::testing::TestWithParam<std::tuple<std::string, int>>
 {
   protected:
     const std::string RAW_PATH = "./raw";
@@ -21,7 +21,7 @@ class PerfTests : public ::testing::TestWithParam<std::tuple<std::string,int>>
         m_path = std::get<0>(GetParam());
         m_accessCount = std::get<1>(GetParam());
 
-        std::string commandStr {m_path + " " + std::to_string(m_accessCount)};
+        std::string commandStr{m_path + " " + std::to_string(m_accessCount)};
 
         // Measure direct run time
         auto startDirect = std::chrono::high_resolution_clock::now();
@@ -42,7 +42,7 @@ class PerfTests : public ::testing::TestWithParam<std::tuple<std::string,int>>
 TEST_P(PerfTests, DebuggerPerfTests)
 {
     std::vector<std::string> args{std::to_string(m_accessCount)};
-    dbg::Variable var {"global_var"};
+    dbg::Variable var{"global_var"};
     dbg::Debugger debugger(m_path, args, var);
 
     std::vector<long> read;
@@ -80,9 +80,5 @@ TEST_P(PerfTests, DebuggerPerfTests)
 
 // Define parameters {"path, accessCount"}
 INSTANTIATE_TEST_SUITE_P(PerfTestsInstantiation, PerfTests,
-    ::testing::Values(
-        std::make_tuple("./raw", 10000),
-        std::make_tuple("./real", 10000),
-        std::make_tuple("./raw", 50000),
-        std::make_tuple("./real", 50000)
-    ));
+                         ::testing::Values(std::make_tuple("./raw", 10000), std::make_tuple("./real", 10000),
+                                           std::make_tuple("./raw", 50000), std::make_tuple("./real", 50000)));

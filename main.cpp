@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     debugger.setOnWrite(
         [&debugger](const dbg::Variable& var)
         {
-            auto lastVar = debugger.getLastVar();
+            const auto& lastVar = debugger.getLastVar();
             std::cout << var.name << "\twrite:\t" << lastVar.toString() << " -> " << var.toString() << "\n";
         });
     // clang-format on

@@ -6,6 +6,7 @@
 
 namespace dbg
 {
+
 struct Variable
 {
     // set by client
@@ -22,8 +23,7 @@ struct Variable
 
     [[nodiscard]] std::string toString() const;
 
-    template <typename T>
-    [[nodiscard]] T get() const
+    template <typename T> [[nodiscard]] T get() const
     {
         if (sizeof(T) != size)
         {

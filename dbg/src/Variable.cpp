@@ -8,7 +8,7 @@ namespace dbg
     {
     }
 
-    [[nodiscard]] std::string Variable::toString() const
+    std::string Variable::toString() const
     {
         // clang-format off
         switch (size)

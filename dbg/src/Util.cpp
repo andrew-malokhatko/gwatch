@@ -58,7 +58,9 @@ uintptr_t getBaseAddress(pid_t pid, const std::string& exePath)
     std::string mapsPath = "/proc/" + std::to_string(pid) + "/maps";
     std::ifstream maps(mapsPath);
     if (!maps)
+    {
         throw std::runtime_error("failed to open" + mapsPath);
+    }
 
     std::string line;
     while (std::getline(maps, line))
@@ -66,7 +68,9 @@ uintptr_t getBaseAddress(pid_t pid, const std::string& exePath)
         std::istringstream iss(line);
         std::string addr, perms, offset, dev, inode, path;
         if (!(iss >> addr >> perms >> offset >> dev >> inode))
+        {
             continue;
+        }
 
         std::getline(iss, path); // path may contain spaces
         if (!path.empty() && path.front() == ' ')
@@ -92,7 +96,7 @@ uintptr_t getBaseAddress(pid_t pid, const std::string& exePath)
         }
     }
 
-    throw std::runtime_error("could not find x permission in mappings for " + exePath);
+    throw std::runtime_error("could not find mappings for " + exePath);
 }
 
 std::pair<uint64_t, uint64_t> findSymbol(const std::string& exePath, const std::string& symbolName)
@@ -140,6 +144,7 @@ std::pair<uint64_t, uint64_t> findSymbol(const std::string& exePath, const std::
     for (int i = 0; i < elfHdr->e_shnum; ++i)
     {
         const char* name = secHdrStrTable + elfSecHdr[i].sh_name;
+
         if (strcmp(name, ".symtab") == 0)
             symtabHdr = &elfSecHdr[i];
         if (strcmp(name, ".strtab") == 0)
@@ -187,6 +192,10 @@ enum AccessType
 
 void setHardwareWatchpoint(pid_t pid, uintptr_t addr, size_t size)
 {
+    //  Note: two debug registers are used, first set to write-only and second to read-write, this way:
+    //  read = read-write && !write-only
+    //  write = read-write && write-only
+
     // set address to DR0
     long ret = ptrace(PTRACE_POKEUSER, pid, offsetof(struct user, u_debugreg[0]), reinterpret_cast<void*>(addr));
     if (ret == -1)

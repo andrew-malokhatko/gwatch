@@ -41,29 +41,11 @@ const Variable& Debugger::getLastVar() const
     return m_prevVar;
 }
 
-void Debugger::trackNewThread(pid_t threadId)
-{
-    int status = 0;
-    int wRet = waitpid(threadId, &status, 0);
-
-    if (wRet < 0)
-    {
-        throw std::runtime_error("waitpid(newThreadId) failed: " + std::string(strerror(errno)));
-    }
-
-    util::setHardwareWatchpoint(threadId, m_var.address, m_var.size);
-
-    long pRet = ptrace(PTRACE_CONT, threadId, nullptr, nullptr);
-    if (pRet < 0)
-    {
-        throw std::runtime_error("PTRACE_CONT failed: " + std::string(strerror(errno)));
-    }
-}
-
 void Debugger::attachDebugger(pid_t childPid)
 {
     int status = 0;
     pid_t wRet = waitpid(childPid, &status, 0);
+
     if (wRet < 0)
     {
         throw std::runtime_error("waitpid failed for " + std::to_string(childPid));
@@ -93,6 +75,25 @@ void Debugger::attachDebugger(pid_t childPid)
     }
 
     pRet = ptrace(PTRACE_CONT, childPid, nullptr, nullptr);
+    if (pRet < 0)
+    {
+        throw std::runtime_error("PTRACE_CONT failed: " + std::string(strerror(errno)));
+    }
+}
+
+void Debugger::traceNewThread(pid_t threadId) const
+{
+    int status = 0;
+    int wRet = waitpid(threadId, &status, 0);
+
+    if (wRet < 0)
+    {
+        throw std::runtime_error("waitpid(newThreadId) failed: " + std::string(strerror(errno)));
+    }
+
+    util::setHardwareWatchpoint(threadId, m_var.address, m_var.size);
+
+    long pRet = ptrace(PTRACE_CONT, threadId, nullptr, nullptr);
     if (pRet < 0)
     {
         throw std::runtime_error("PTRACE_CONT failed: " + std::string(strerror(errno)));
@@ -149,17 +150,18 @@ void Debugger::traceChild(pid_t childPid)
                 // handle new threads
                 if (event == PTRACE_EVENT_CLONE)
                 {
-                    pid_t newTid = 0; // threadId of new thread
+                    pid_t newTid = 0;
                     long pRet = ptrace(PTRACE_GETEVENTMSG, threadId, nullptr, &newTid);
                     if (pRet < 0)
                     {
                         throw std::runtime_error("PTRACE_GETEVENTMSG failed: " + std::string(strerror(errno)));
                     }
 
-                    trackNewThread(newTid);
+                    traceNewThread(newTid);
                 }
                 else
                 {
+                    // read variable's value with ptrace
                     long word = ptrace(PTRACE_PEEKDATA, threadId, m_var.address, nullptr);
                     if (word == -1 && errno != 0)
                     {
@@ -191,6 +193,7 @@ void Debugger::runChild()
 {
     std::vector<char*> cStrArray = util::toCStringArray(m_args, m_path);
 
+    // resolve path
     try
     {
         m_path = std::filesystem::canonical(m_path).string();

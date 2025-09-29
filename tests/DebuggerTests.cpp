@@ -25,6 +25,7 @@ TEST_F(DebuggerTests, OneRead)
     std::vector<int> read;
     std::vector<int> write;
 
+    // clang-format off
     debugger.setOnRead(
         [&read](const dbg::Variable& var)
         {
@@ -37,6 +38,7 @@ TEST_F(DebuggerTests, OneRead)
         {
             write.push_back(var.get<int>());
         });
+    // clang-format on
 
     debugger.run();
 
@@ -55,6 +57,7 @@ TEST_F(DebuggerTests, OneReadShort)
     std::vector<short> read;
     std::vector<short> write;
 
+    // clang-format off
     debugger.setOnRead(
         [&read](const dbg::Variable& var)
         {
@@ -67,6 +70,7 @@ TEST_F(DebuggerTests, OneReadShort)
         {
             write.push_back(var.get<short>());
         });
+    // clang-format on
 
     debugger.run();
 
@@ -85,6 +89,7 @@ TEST_F(DebuggerTests, OneReadLong)
     std::vector<long> read;
     std::vector<long> write;
 
+    // clang-format off
     debugger.setOnRead(
         [&read](const dbg::Variable& var)
         {
@@ -97,6 +102,7 @@ TEST_F(DebuggerTests, OneReadLong)
         {
             write.push_back(var.get<long>());
         });
+    // clang-format on
 
     debugger.run();
 
@@ -115,6 +121,7 @@ TEST_F(DebuggerTests, OneWrite)
     std::vector<long> read;
     std::vector<long> write;
 
+    // clang-format off
     debugger.setOnRead(
         [&read](const dbg::Variable& var)
         {
@@ -126,6 +133,7 @@ TEST_F(DebuggerTests, OneWrite)
         {
             write.push_back(var.get<long>());
         });
+    // clang-format on
 
     debugger.run();
 
@@ -144,6 +152,7 @@ TEST_F(DebuggerTests, ReadThread)
     std::vector<int> read;
     std::vector<int> write;
 
+    // clang-format off
     debugger.setOnRead(
         [&read](const dbg::Variable& var)
         {
@@ -155,6 +164,7 @@ TEST_F(DebuggerTests, ReadThread)
         {
             write.push_back(var.get<int>());
         });
+    // clang-format on
 
     debugger.run();
 
@@ -173,6 +183,7 @@ TEST_F(DebuggerTests, WriteThread)
     std::vector<int> read;
     std::vector<int> write;
 
+    // clang-format off
     debugger.setOnRead(
         [&read](const dbg::Variable& var)
         {
@@ -184,6 +195,7 @@ TEST_F(DebuggerTests, WriteThread)
         {
             write.push_back(var.get<int>());
         });
+    // clang-format on
 
     debugger.run();
 
@@ -202,6 +214,7 @@ TEST_F(DebuggerTests, MutiThread)
     std::vector<int> read;
     std::vector<int> write;
 
+    // clang-format off
     debugger.setOnRead(
         [&read](const dbg::Variable& var)
         {
@@ -213,6 +226,7 @@ TEST_F(DebuggerTests, MutiThread)
         {
             write.push_back(var.get<int>());
         });
+    // clang-format on
 
     debugger.run();
 

@@ -16,14 +16,12 @@ class Debugger
     Variable m_var;
     Variable m_prevVar{};
 
-    // args: value, variable size
     using callback_t = std::function<void(const Variable&)>;
-
     callback_t m_onRead;
     callback_t m_onWrite;
 
 private:
-    void trackNewThread(pid_t threadId);
+    void traceNewThread(pid_t threadId) const;
 
     void attachDebugger(pid_t childPid);
     void traceChild(pid_t childPid);
@@ -41,8 +39,8 @@ private:
     void setOnRead(callback_t onRead);
     void setOnWrite(callback_t onWrite);
 
-    const Variable& getVar() const;
-    const Variable& getLastVar() const;
+    [[nodiscard]] const Variable& getVar() const;
+    [[nodiscard]] const Variable& getLastVar() const;
 
     void run();
 };
