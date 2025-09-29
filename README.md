@@ -67,6 +67,16 @@ cmake ..
 cmake --build .
 ```
 
+### Build Options
+This project provides two optional build flags
+- `BUILD_TEST` - Build unit and performance tests (default: ON)
+- `BUILD_EXAMPLES` - Build example programs (default: ON)
+
+You can disable them during configuration: 
+```shell
+cmake .. -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF 
+```
+
 # Usage
 
 Run the debugger with:
