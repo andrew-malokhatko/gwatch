@@ -26,7 +26,7 @@ due to name mangling. It works correctly only if the global variable:
 > but I could not find a way to reliably demangle them without external
 > tools. As a result, C++ globals are not fully supported in this implementation.
 
-### Global varialbes
+### Global variables
 This program tracks only non-static C global variables, which are
 listed in the symbol table without any compiler-applied mangling.
 Singed types are possible, but are interpreted as unsigned, as
@@ -118,7 +118,7 @@ To see detailed output of performance tests, run with --verbose:
 ctest -R PerfTests --verbose 
 ```
 
-You can find all of the test programs in `tests/dummy` directory.
+You can find all the test programs in `tests/dummy` directory.
 
 ### autotest.sh
 
