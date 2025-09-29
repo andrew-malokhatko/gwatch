@@ -91,7 +91,7 @@ A sample executable `cli_example` is provided, which updates three global variab
 or
 
 ```shell
-./gwatch --svar a --exec ./cli_example
+./gwatch --svar b --exec ./cli_example
 ```
 
 # Tests
@@ -117,6 +117,8 @@ To see detailed output of performance tests, run with --verbose:
 ```shell
 ctest -R PerfTests --verbose 
 ```
+
+You can find all of the test programs in `tests/dummy` directory.
 
 ### autotest.sh
 
